@@ -33,6 +33,7 @@ HOMEWORK_STATUSES = {
 
 
 def send_message(bot, message):
+    """ Отправляет сообщение в Telegram чат """
     try:
         bot.send_message(TELEGRAM_CHAT_ID, message)
         logger.info('Отправлено сообщение.')
@@ -41,6 +42,7 @@ def send_message(bot, message):
 
 
 def get_api_answer(current_timestamp):
+    """ Делает запрос к эндпоинту API-сервиса Практикум.Домашка """
     logger.info('Запрос к эндпоинту API-сервиса')
     timestamp = current_timestamp
     params = {'from_date': timestamp}
@@ -61,6 +63,7 @@ def get_api_answer(current_timestamp):
 
 
 def check_response(response):
+    """ Проверяет ответ API на корректность """
     if not isinstance(response, dict):
         raise TypeError('Ответ API не словарь.')
     hw = ['homeworks'][0]
@@ -72,6 +75,7 @@ def check_response(response):
 
 
 def parse_status(homework):
+    """ Извлекает из информации о домашней работе статус этой работы"""
     if type(homework) == dict:
         homework_name = homework['homework_name']
         homework_status = homework['status']
@@ -80,16 +84,18 @@ def parse_status(homework):
         if homework_name is None:
             raise Exception('Пустое значение homework_name.')
         if homework_status not in HOMEWORK_STATUSES:
-            message = f'Статуса домашней работы нет в словаре.'
+            message = 'Статуса домашней работы нет в словаре.'
             logger.error(message)
             raise Exception(message)
         verdict = HOMEWORK_STATUSES[homework_status]
-        return f'Изменился статус проверки работы "{homework_name}" : {verdict}'
+        return f'Изменился статус проверки работы' \
+               f' "{homework_name}" : {verdict}'
     else:
         raise KeyError('Входной параметр не словарь.')
 
 
 def check_tokens():
+    """ Проверяет переменные окружения, необходимые для работы программы."""
     if PRACTICUM_TOKEN is None or TELEGRAM_TOKEN is None or \
             TELEGRAM_CHAT_ID is None:
         return False
