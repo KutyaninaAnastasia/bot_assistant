@@ -33,7 +33,7 @@ HOMEWORK_STATUSES = {
 
 
 def send_message(bot, message):
-    """ Отправляет сообщение в Telegram чат """
+    """Отправляет сообщение в Telegram чат."""
     try:
         bot.send_message(TELEGRAM_CHAT_ID, message)
         logger.info('Отправлено сообщение.')
@@ -42,7 +42,7 @@ def send_message(bot, message):
 
 
 def get_api_answer(current_timestamp):
-    """ Делает запрос к эндпоинту API-сервиса Практикум.Домашка """
+    """Делает запрос к эндпоинту API-сервиса Практикум.Домашка."""
     logger.info('Запрос к эндпоинту API-сервиса')
     timestamp = current_timestamp
     params = {'from_date': timestamp}
@@ -63,7 +63,7 @@ def get_api_answer(current_timestamp):
 
 
 def check_response(response):
-    """ Проверяет ответ API на корректность """
+    """Проверяет ответ API на корректность."""
     if not isinstance(response, dict):
         raise TypeError('Ответ API не словарь.')
     hw = ['homeworks'][0]
@@ -75,7 +75,7 @@ def check_response(response):
 
 
 def parse_status(homework):
-    """ Извлекает из информации о домашней работе статус этой работы"""
+    """Извлекает из информации о домашней работе статус этой работы."""
     if type(homework) == dict:
         homework_name = homework['homework_name']
         homework_status = homework['status']
@@ -95,7 +95,7 @@ def parse_status(homework):
 
 
 def check_tokens():
-    """ Проверяет переменные окружения, необходимые для работы программы."""
+    """Проверяет переменные окружения, необходимые для работы программы."""
     if PRACTICUM_TOKEN is None or TELEGRAM_TOKEN is None or \
             TELEGRAM_CHAT_ID is None:
         return False
