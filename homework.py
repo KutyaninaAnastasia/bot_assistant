@@ -88,17 +88,17 @@ def parse_status(homework):
     """Извлекает из информации о домашней работе статус этой работы."""
     if type(homework) == dict:
         if 'status' in homework:
-             homework_status = homework.get('status')
+            homework_status = homework.get('status')
         else:
-             raise KeyError(f'Ключа "status" нет в ответе')
+            raise KeyError('Ключа "status" нет в ответе')
         if 'homework_name' in homework:
-             homework_name = homework.get('homework_name')
+            homework_name = homework.get('homework_name')
         else:
-             raise KeyError(f'Ключа "homework_name" нет в ответе')
+            raise KeyError('Ключа "homework_name" нет в ответе')
         if homework_status is None:
-             raise Exception('Пустое значение status.')
+            raise Exception('Пустое значение status.')
         if homework_name is None:
-             raise Exception('Пустое значение homework_name.')
+            raise Exception('Пустое значение homework_name.')
         if homework_status in HOMEWORK_STATUSES:
             verdict = HOMEWORK_STATUSES[homework_status]
             return (f'Изменился статус проверки работы "{homework_name}" :'
@@ -139,7 +139,8 @@ def main():
                         status = parse_status(hw)
                         if status is not None:
                             send_message(bot, status)
-                            logger.info('Сообщение о статусе работы отправлено')
+                            logger.info(
+                                'Сообщение о статусе работы отправлено')
                 else:
                     logger.debug('Нет изменений в статусах домашних работ')
             time.sleep(RETRY_TIME)
