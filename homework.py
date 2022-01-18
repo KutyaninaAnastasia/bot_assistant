@@ -77,10 +77,6 @@ def check_response(response):
         raise TypeError('Ответ API не словарь.')
     if homework is None:
         raise Exception("Задания не обнаружены")
-    # if len(homework) == 0:
-    #     logger.debug('Нет изменений в статусах домашних работ')
-    #     raise ValueError('Нет изменений в статусах домашних работ')
-
     return homework
 
 
