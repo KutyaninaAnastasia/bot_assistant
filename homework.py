@@ -39,7 +39,7 @@ def send_message(bot, message):
     try:
         bot.send_message(TELEGRAM_CHAT_ID, message)
         logger.info('Отправлено сообщение.')
-    except telegram.TelegramError() as error:
+    except telegram.TelegramError as error:
         logger.error(f'Сообщение не отправлено. {error}')
 
 
@@ -54,8 +54,16 @@ def get_api_answer(current_timestamp):
             params=params,
             headers=HEADERS
         )
+    except requests.exceptions.Timeout:
+        raise Exception('Превышено время ожидания ответа')
+    except requests.exceptions.HTTPError:
+        raise Exception('Недопустимый ответ от сервера')
+    except requests.exceptions.ConnectionError:
+        raise Exception('Ошибка соединения')
+    except requests.exceptions.TooManyRedirects:
+        raise Exception('Превышено число перенаправлений')
     except requests.exceptions.RequestException as error:
-        raise Exception(f'Не верный тип данных {error}.')
+        raise SystemExit(error)
     if homework_answer.status_code != HTTPStatus.OK:
         message = f'Эндпоинт {ENDPOINT} недоступен.'
         logger.error(message)
@@ -72,12 +80,15 @@ def check_response(response):
     """Проверяет ответ API на корректность."""
     if not isinstance(response, dict):
         raise TypeError('Ответ API не словарь.')
-    homework = response['homeworks']
-    if not isinstance(homework, list):
-        raise TypeError('Ответ API не словарь.')
-    if homework is None:
-        raise Exception("Задания не обнаружены")
-    return homework
+    if 'homeworks' in response:
+        homework = response['homeworks']
+        if not isinstance(homework, list):
+            raise TypeError('Ответ API не словарь.')
+        if homework is None:
+            raise Exception("Задания не обнаружены")
+        return homework
+    else:
+        raise KeyError('Ключа "homeworks" нет в ответе')
 
 
 def parse_status(homework):
@@ -110,8 +121,8 @@ def parse_status(homework):
 
 def check_tokens():
     """Проверяет переменные окружения, необходимые для работы программы."""
-    if PRACTICUM_TOKEN is None or TELEGRAM_TOKEN is None or \
-            TELEGRAM_CHAT_ID is None:
+    if (PRACTICUM_TOKEN is None or TELEGRAM_TOKEN is None or
+            TELEGRAM_CHAT_ID is None):
         return False
     return True
 
